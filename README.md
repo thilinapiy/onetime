@@ -32,7 +32,7 @@ onetime:v0.0.0-rc1
 
 ```
 curl -XPOST http://localhost:8080/add \
--d "message=This is my secet message to you."
+-d "message=This is my secret message to you."
 ```
 System will provide a URL to retrieve your secret.
 
@@ -44,4 +44,4 @@ System will provide a URL to retrieve your secret.
 
 Your secret
 
-`{"secret": "This is my secet message to you."}`
+`{"secret": "This is my secret message to you."}`
