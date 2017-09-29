@@ -1,0 +1,75 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: onetime
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: onetime
+    spec:
+      containers:
+      - name: onetimeapp
+        image: docker.io/thilina/onetime:v0.0.1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+        - name: "HOSTNAME"
+          value: "http://onetime.thilina.org"
+        - name: "PREFIX" 
+          value: "secret"
+        - name: "VAULT_ADDR"
+          value: "http://127.0.0.1:8200"
+        - name: "VAULT_TOKEN"
+          value: "710bf60d-ecd9-6e41-8055-b9947f6f0e20"
+      - name: vault
+        image: docker.io/vault:0.8.3
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8200
+        env:
+        - name: "SKIP_SETCAP" 
+          value: "true"
+        - name: "VAULT_DEV_ROOT_TOKEN_ID"
+          value: "710bf60d-ecd9-6e41-8055-b9947f6f0e20"
+        - name: "VAULT_DEV_LISTEN_ADDRESS"
+          value: "0.0.0.0:8200"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+  name: onetime
+  labels:
+    app: onetime
+spec:
+  ports:
+  - port: 8080
+    name: onetime
+    targetPort: 8080
+  selector:
+    app: onetime
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  labels:
+    httpsBackend: "false"
+    httpsOnly: "false"
+    ssl: "false"
+#    httpsOnly: "true"
+#    ssl: "true"
+  name: onetime
+spec:
+  rules:
+  - host: onetime.thilina.org 
+    http:
+      paths:
+      - backend:
+          serviceName: onetime
+          servicePort: 8080
+        path: /
