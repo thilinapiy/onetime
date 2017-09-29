@@ -1,11 +1,11 @@
-# onetime
+# OneTime
 Send secrets that will self-destruct after reading. Use vault as the secret store.
 
 ## Build the go script
 
 `CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .`
 
-## build the docker image
+## Build the docker image
 
 `docker build -t onetime:v0.0.0-rc1 .`
 
@@ -38,5 +38,7 @@ System will provide a URL to retrieve your secret.
 ## Retrieve your secret
 
 `curl http://127.0.0.1:8080/get/6VCH5E3POUHYX5OJ5FCYLHR5ESNHQMVW`
+
+Your secret
 
 `{"secret": "This is my secet message to you."}`
